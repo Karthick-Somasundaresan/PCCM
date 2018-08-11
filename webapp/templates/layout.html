@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PCC</title>
+</head>
+<style>
+    .bodyStyle {
+        background-color: black
+    }
+   .checkBoxStyle {
+        color:goldenrod;
+   }
+
+</style>
+<body class="bodyStyle">
+<h1 style="color: crimson"> Personalized Closed Caption </h1>
+<div>
+    <p style="color: cornsilk; font-size: 20px" >Please select the words that you know</p>
+    <form action="/evaluate" method="post">
+    {% for word in words %}
+        <div class="checkBoxStyle">
+            <input type="checkbox" name={{ word }} id={{ word }}> {{ word }}<br>
+        </div>
+    {% endfor %}
+    <input type="submit" value="submit">
+    </form>
+</div>
+</body>
+</html>

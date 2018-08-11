@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PCC</title>
+</head>
+<style>
+    .imgContainer {
+        display: inline-block;
+    }
+    .bodyStyle {
+        background-color: black
+    }
+    .paraStyle {
+        text-align: center;
+        color: blanchedalmond
+    }
+    .imgSizing {
+        height: 10
+        width: 5
+    }
+</style>
+<body class="bodyStyle">
+<h1 style="color: crimson"> Personalized Closed Caption </h1>
+ <div>
+        <p style="color: cornsilk; font-size: 20px" > Movies with PCC</p>
+        {% for movie in movies %}
+        <div class="imgContainer">
+            <p> <a href="/surveyMovie?id={{ movie.id}}">
+            <img width="300" height="400" id={{ movie.id }} src={{ movie.poster }} alt="Movie Name" >
+            <p class="paraStyle">{{ movie.name }}</p>
+            </a>
+            </p>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
