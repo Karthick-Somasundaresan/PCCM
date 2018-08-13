@@ -1,5 +1,5 @@
-from flask import  Flask, render_template, request
-
+from flask import Flask, render_template, request
+import trials.MovieAnalyser as MovieAnalyser
 
 
 app = Flask(__name__)
@@ -12,7 +12,7 @@ def index():
 
 @app.route('/home')
 def home():
-    movies = [{"poster":"./static/Pirates1.jpg", "name":" Pirates 1", "id": "asset1"},
+    movies = [{"poster": "./static/Pirates1.jpg", "name":" Pirates 1", "id": "asset1"},
               {"poster": "./static/Pirates1.jpg", "name": " Pirates 2", "id": "asset2"}]
     return render_template('HomePage.html', movies=movies)
 
@@ -20,15 +20,19 @@ def home():
 @app.route('/surveyMovie')
 def surveyMovie():
     movie_id = request.args.get('id')
-    words = [u'trick', u'stole', u'ideas', u'pair', u'meaning', u'ambushing', u'betrayers', u'wreaked', u'buccaneer', u'bootstraps', u'plunder', u'gallivanting', u'extort', u'ravage', u'savvy', u'mutineers', u'feckless', u'brigandage', u'dauntless', u'hob']
-    return render_template('layout.html', words=words)
+    words = MovieAnalyser.get_samples_for_movie(movie_id)
+    resp = app.make_response(render_template('layout.html', words=words))
+    resp.set_cookie("movie_id", movie_id)
+    return resp
 
 
 @app.route('/evaluate', methods=["POST"])
-def evalutate():
+def evaluate():
     for elems in request.form:
         print(elems)
+    print("Movie_id: ", request.cookies.get("movie_id"))
     return render_template('MoviePage.html')
+
 
 def clever_function(id):
     print("clicked on :poster", id)

@@ -11,7 +11,7 @@ cursor = conn.cursor()
 
 def get_freq_details(words):
     word_list = list(words)
-    print "Number of words:", len(word_list)
+    print("Number of words:", len(word_list))
 
     # formed_clause = ""
     # for word in word_list:
@@ -21,20 +21,20 @@ def get_freq_details(words):
     #         formed_clause = formed_clause + " OR Word=\"" + word + "\""
     formed_clause = ""
     for word in word_list:
-        print word
+        print(word)
         if formed_clause == "":
             formed_clause = "\'" + word + "\'"
         else:
             formed_clause = formed_clause + ",\'" + word + "\'"
 
-    print "formed_clause:", formed_clause
+    print("formed_clause:", formed_clause)
     formed_cmd = "".join("select Word, Lg10WF from SUBTLEX_US where Word in (")
     formed_cmd = formed_cmd + formed_clause
     formed_cmd = formed_cmd + ")"
-    print formed_cmd
+    print(formed_cmd)
 
 
-    print "Formed command:", formed_cmd
+    print("Formed command:", formed_cmd)
     results = cursor.execute(formed_cmd).fetchall()
     result_json = {}
     for rows in results:
@@ -48,7 +48,7 @@ def get_freq_details(words):
 
 words = ["create", "abbas", "body"]
 res = get_freq_details(words)
-print "Response:"
-print res
-print "Orig list:"
-print words
+print("Response:")
+print(res)
+print("Orig list:")
+print(words)

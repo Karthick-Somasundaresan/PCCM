@@ -19,18 +19,18 @@ def extract_dialogue(file_name):
         if line[0].isdigit() or line[0].isspace() or not line[0].isalpha():
             continue
         else:
-            print line,
+            print(line,)
             words = word_tokenize(line)
             tagged = nltk.pos_tag(words)
-            print tagged
+            print(tagged)
             filtered_words = filter_words(tagged)
-            print "----------------------------------------"
+            print("----------------------------------------")
             words = line.split(" ")
-            print "words", words
-            print "filtered words", filtered_words
-    print "fileName:", os.path.basename(file_name)
+            print("words", words)
+            print("filtered words", filtered_words)
+    print("fileName:", os.path.basename(file_name))
     mod_filename = "mod_" + os.path.basename(file_name)
-    print "Modified FileName:", mod_filename
+    print("Modified FileName:", mod_filename)
 
 
 extract_dialogue("/Users/karsomas/BITS/Project/Subtitles/Pirates_of_the_Caribbean_The_Curse_of_the_Black_Pearl.DVDRip.aXXo.en.srt")

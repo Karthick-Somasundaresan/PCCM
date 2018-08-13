@@ -21,7 +21,7 @@ def get_median(sorted_arr):
 def sort_dic_on_value(dic, field="AoA"):
     key_list = []
     val_list = []
-    for key, value in sorted(dic.iteritems(), key=lambda x: x[1][field]):
+    for key, value in sorted(dic.items(), key=lambda x: x[1][field]):
         key_list.append(key)
         val_list.append(value[field])
 
@@ -39,9 +39,9 @@ def get_five_num_summary(score_doc, field):
     min_val = score_doc[sorted_words[0]][field]
     max_val = score_doc[sorted_words[-1]][field]
     median = get_median(sorted_value) # This is otherwise known as q2
-    sub_list_low = list(sorted_value[0:len(sorted_value)/2 + 1])
+    sub_list_low = list(sorted_value[0:int(len(sorted_value)/2) + 1])
     sub_list_low[-1] = median
-    sub_list_high = list(sorted_value[len(sorted_value)/2:])
+    sub_list_high = list(sorted_value[int(len(sorted_value)/2):])
     sub_list_high[0] = median
     q1 = get_median(sub_list_low)
     q3 = get_median(sub_list_high)

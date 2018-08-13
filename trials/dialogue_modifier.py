@@ -6,6 +6,7 @@ from nltk.corpus import wordnet, brown
 from openpyxl import load_workbook
 import logging
 import sqlite3
+import UserScore
 freq_conn = sqlite3.connect("/Users/karsomas/BITS/Project/data/sqlite_dbs/WordFrequency.db")
 
 freq_cursor = freq_conn.cursor()
@@ -152,8 +153,8 @@ def extract_dialogue(file_name):
         else:
             word_map = {}
             #logging.debug(line)
-            print "----------------------------------------"
-            print "Line:", line
+            print("----------------------------------------")
+            print("Line:", line)
             tagged = mark_pos_for_line(line)
             # words = word_tokenize(line)
             # tagged = nltk.pos_tag(words)
@@ -170,19 +171,19 @@ def extract_dialogue(file_name):
             #print "Line:", line
             #print "Subs:", word_map
             mod_line = get_transformed_line(line, word_map)
-            print "Modified line:", mod_line
+            print( "Modified line:", mod_line)
             write_file_ptr.write(mod_line)
 
     write_file_ptr.close()
     file_ptr.close()
 
-    print "fileName:", os.path.basename(file_name)
-    print "Modified FileName:", mod_filename
+    print("fileName:", os.path.basename(file_name))
+    print("Modified FileName:", mod_filename)
 
 
 def get_freq_details(words):
     word_list = list(words)
-    print "Number of words:", len(word_list)
+    print("Number of words:", len(word_list))
 
     formed_clause = ""
     for word in word_list:

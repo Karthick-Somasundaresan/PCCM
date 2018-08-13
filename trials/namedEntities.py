@@ -23,15 +23,15 @@ def processLanguage():
         for item in contentArray:
             tokenized = nltk.word_tokenize(item)
             tagged = nltk.pos_tag(tokenized)
-            print tagged
+            print(tagged)
 
             namedEnt = nltk.ne_chunk(tagged)
-            print namedEnt
+            print(namedEnt)
             namedEnt.draw()
 
             time.sleep(1)
-    except Exception, e:
-        print str(e)
+    except Exception as e:
+        print(str(e))
 
 
 processLanguage()
