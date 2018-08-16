@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 import trials.MovieAnalyser as MovieAnalyser
+import trials.UserScore as UserScore
 
 
 app = Flask(__name__)
@@ -30,7 +31,10 @@ def surveyMovie():
 def evaluate():
     for elems in request.form:
         print(elems)
-    print("Movie_id: ", request.cookies.get("movie_id"))
+    mov_id = request.cookies.get("movie_id")
+    print("Movie_id: ", mov_id)
+    usr_scr = UserScore.analyze_usr_scr(mov_id, request.form)
+    print("User's evaluated Score:", usr_scr)
     return render_template('MoviePage.html')
 
 

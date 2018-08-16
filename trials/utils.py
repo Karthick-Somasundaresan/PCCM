@@ -1,4 +1,4 @@
-
+import json
 # def get_median(sorted_arr):
 #     print sorted_arr
 #     num_entries = len(sorted_arr)
@@ -35,9 +35,16 @@ def get_five_num_summary(score_doc, field):
     # score_doc     - is a dic containing words {word: <AoA_Val>}
     # sorted_words  - after sorting based on AoA_Val key part of the score_doc
     # sorted_value  - after sorting based on AoA_Val value part of the score_doc
-    sorted_words, sorted_value = sort_dic_on_value(score_doc, field)
-    min_val = score_doc[sorted_words[0]][field]
-    max_val = score_doc[sorted_words[-1]][field]
+    # print(score_doc)
+    if isinstance(score_doc, dict):
+        sorted_words, sorted_value = sort_dic_on_value(score_doc, field)
+        min_val = score_doc[sorted_words[0]][field]
+        max_val = score_doc[sorted_words[-1]][field]
+    elif isinstance(score_doc, list):
+        score_doc.sort()
+        min_val = score_doc[0]
+        max_val = score_doc[-1]
+        sorted_value = list(score_doc)
     median = get_median(sorted_value) # This is otherwise known as q2
     sub_list_low = list(sorted_value[0:int(len(sorted_value)/2) + 1])
     sub_list_low[-1] = median
@@ -52,3 +59,14 @@ def get_five_num_summary(score_doc, field):
     five_num_summ["q3"] = q3
 
     return five_num_summ
+
+
+def load_mov_det(assetId):
+    with open("data/"+ assetId + ".json", "r") as fp:
+        mov_json = json.load(fp)
+    return mov_json
+
+#TODO - Have to get the actual subtitles location for the given assetId
+def get_subtitles_for_asset(assetId):
+    return "subtitles/original/Pirates_of_the_Caribbean_The_Curse_of_the_Black_Pearl.webvtt"
+

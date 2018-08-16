@@ -2,6 +2,7 @@ import json
 import trials.utils as utils
 import trials.sampler as sampler
 from nltk.tokenize import word_tokenize
+import trials.drawGraph as drawGraph
 
 import os
 import sqlite3
@@ -48,7 +49,7 @@ def get_aoa_score(dialogues):
     word_cnt = 0
     word_dic = {}
     conn = get_db_conn(aoa_db_loc)
-    cmd = "select Word, AoA_Kup_lem from AoA_words where Word="
+    cmd = "select Word, AoA_Kup_lem, Lemma_highest_PoS from AoA_words where Word="
     for word in word_tokenize(dialogues):
         if word in punctuations:
             continue
@@ -61,7 +62,9 @@ def get_aoa_score(dialogues):
             score = 25
         else:
             score = float(result[1])
-        word_dic[result[0]] = {"AoA": score}
+            lemma = result[2]
+
+        word_dic[result[0]] = {"AoA": score, "lemma": lemma}
         tot_score += score
         word_cnt += 1
     conn.close()
@@ -151,7 +154,7 @@ def get_movie_score(filename):
     print("Ratio of q1:", q1_cnt/len(detailed_score), " q2:", q2_cnt/len(detailed_score), " q3:", \
         q3_cnt/len(detailed_score), " q4:", q4_cnt/len(detailed_score))
 
-    return detailed_score
+    return detailed_score, aoa_outlier_boundary, freq_outlier_boundary
 
 
 def get_samples(detailed_mov_scr):
@@ -174,11 +177,11 @@ def get_samples(detailed_mov_scr):
 
     #avg_freq_score, detail_freq_score = get_freq_score()
 def get_samples_for_movie(movie_id):
-    det_mov_scr = get_movie_score("/Users/karsomas/BITS/Project/Subtitles/Pirates_of_the_Caribbean_The_Curse_of_the_Black_Pearl.DVDRip.aXXo.en.srt")
-    mov_sam = get_samples(det_mov_scr)
-    mov_dic = {movie_id: {"det_mov_scr": det_mov_scr}}
+    det_mov_scr, aoa_out, freq_out = get_movie_score("/Users/karsomas/BITS/Project/Subtitles/Pirates_of_the_Caribbean_The_Curse_of_the_Black_Pearl.DVDRip.aXXo.en.srt")
+    mov_sam, q1_avg, q2_avg, q3_avg, q4_avg = get_samples(det_mov_scr)
+    mov_dic = {movie_id: {"det_mov_scr": det_mov_scr}, "q1_avg": q1_avg, "q2_avg": q2_avg, "q3_avg": q3_avg, "q4_avg": q4_avg, "aoa_out": aoa_out, "freq_out": freq_out}
     mov_json = json.dumps(mov_dic)
-    fd = open("../data/" + movie_id + ".json", "w")
+    fd = open("data/" + movie_id + ".json", "w")
     fd.write(mov_json)
     fd.close()
     return mov_sam

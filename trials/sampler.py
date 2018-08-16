@@ -136,7 +136,7 @@ def four_cluster_sampling(detailed_dic, sample_size=4, min_quota=2):
     print("Q4 Samples:", q4_samp)
     samples_lst = q1_samp + q2_samp + q3_samp + q4_samp
 
-    return samples_lst
+    return samples_lst, q1_avg_scr, q2_avg_scr, q3_avg_scr, q4_avg_scr
 
 
 if __name__ == "__main__":
