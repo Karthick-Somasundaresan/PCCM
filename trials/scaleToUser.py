@@ -2,9 +2,8 @@ import json
 import trials.utils as utils
 import trials.MovieAnalyser as MovieAnalyser
 import trials.UserScore as UserScore
+import trials.wordProcessor as word_processor
 from random import randint
-from nltk.corpus import wordnet
-from nltk import word_tokenize
 
 def get_alternates(assetId, word_dic, usr_scr):
     hard_word_lst = []
@@ -15,13 +14,13 @@ def get_alternates(assetId, word_dic, usr_scr):
 
     print("Hardwords list:", len(hard_word_lst))
     print("Hardwords list:", hard_word_lst)
+    lines_of_interest = []
     with open(track_filename, "r") as track_fd:
         for line in track_fd:
             if any(word in line for word in hard_word_lst):
-                print(line)
-
-
-
+                lines_of_interest.append(line)
+    
+    word_processor.substitute_lines(lines_of_interest, hard_word_lst)
 
     return hard_word_lst
 
