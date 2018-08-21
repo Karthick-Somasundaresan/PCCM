@@ -20,7 +20,7 @@ def get_alternates(assetId, word_dic, usr_scr):
             if any(word in line for word in hard_word_lst):
                 lines_of_interest.append(line)
     
-    word_processor.substitute_lines(lines_of_interest, hard_word_lst)
+    word_processor.substitute_lines(lines_of_interest, hard_word_lst, usr_scr)
 
     return hard_word_lst
 

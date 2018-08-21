@@ -11,15 +11,7 @@ aoa_db_loc = "/Users/karsomas/BITS/Project/data/sqlite_dbs/AoA.db"
 freq_db_loc = "/Users/karsomas/BITS/Project/data/sqlite_dbs/WordFrequency.db"
 
 
-def get_db_conn(db_loc):
-    #aoa_conn = sqlite3.connect("/Users/karsomas/BITS/Project/data/sqlite_dbs/AoA.db", check_same_thread=False)
-    #freq_conn = sqlite3.connect("/Users/karsomas/BITS/Project/data/sqlite_dbs/WordFrequency.db", check_same_thread=False)
-    conn = sqlite3.connect(db_loc)
-    return conn
 
-
-#aoa_cursor = aoa_conn.cursor()
-#freq_cursor = freq_conn.cursor()
 
 
 def filter_line(line):
@@ -48,7 +40,7 @@ def get_aoa_score(dialogues):
     punctuations = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
     word_cnt = 0
     word_dic = {}
-    conn = get_db_conn(aoa_db_loc)
+    conn = utils.get_db_conn(aoa_db_loc)
     cmd = "select Word, AoA_Kup_lem, Lemma_highest_PoS from AoA_words where Word="
     for word in word_tokenize(dialogues):
         if word in punctuations:
@@ -89,7 +81,7 @@ def get_freq_score(detail_aoa):
     formed_cmd = formed_cmd + ")"
     tot_words = 0
     tot_freq = 0
-    conn = get_db_conn(freq_db_loc)
+    conn = utils.get_db_conn(freq_db_loc)
     results = conn.cursor().execute(formed_cmd).fetchall()
     for rows in results:
         detail_score[rows[0]]["Freq"] = float(rows[1])

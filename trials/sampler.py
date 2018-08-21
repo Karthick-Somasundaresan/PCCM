@@ -93,6 +93,7 @@ def get_quad_data(dic):
     return q1_data, q2_data, q3_data, q4_data
 
 
+#TODO: Change it to utils.py, And change the order of med_scr.
 def get_dist_from_med(word_det, med_scr):
     # med_scr (freq_val, aoa_val)
     dist = math.sqrt(math.pow((med_scr[0] - word_det["Freq"]), 2) + math.pow((med_scr[1] - word_det["AoA"]), 2))

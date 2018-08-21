@@ -45,7 +45,7 @@ def get_hard_words_in_line(line, hard_word_lst):
     return interested_words
 
 
-def substitute_lines(lines_of_interest, hard_word_lst):
+def substitute_lines(lines_of_interest, hard_word_lst, usr_scr):
     line_mapper = {}
     tagger =get_tagger()
     for line in lines_of_interest:
@@ -110,4 +110,7 @@ if __name__ == "__main__":
     get_pos_for_hard_words(line_dat)
     get_all_meanings_for_hard_words(line_dat)
     print(line_dat)
+
+    with open("data/line_full_det.json", "w") as fp:
+        json.dump(line_dat, fp)
 
