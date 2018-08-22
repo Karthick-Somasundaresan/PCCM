@@ -26,13 +26,13 @@ def stratified_sampler(sorted_pop, sample_size):
     sample_list = []
     index_list = []
     pop_copy = sorted_pop[:]
-    print("orig pop size:", len(sorted_pop), " copy pop size:", len(pop_copy))
+    # print("orig pop size:", len(sorted_pop), " copy pop size:", len(pop_copy))
 
     avg_scr = get_avg_scr(sorted_pop)
     # this returns the index which is closer to the avg_scr
     avg_idx = get_tgt_scr_index(sorted_pop, avg_scr)
 
-    print("avg_scr:", avg_scr, "avg_idx:", avg_idx)
+    # print("avg_scr:", avg_scr, "avg_idx:", avg_idx)
     sample_list.append(sorted_pop[0])
     pop_copy[0] = 0
     sample_list.append(sorted_pop[-1])
@@ -41,7 +41,7 @@ def stratified_sampler(sorted_pop, sample_size):
         sample_avg = get_avg_scr(sample_list)
         if sample_avg <= avg_scr:
             rand_idx = randint(avg_idx, len(sorted_pop) - 1)
-            print("random index:", rand_idx)
+            # print("random index:", rand_idx)
             if pop_copy[rand_idx] == 0:
                 continue
             else:
@@ -85,10 +85,10 @@ def get_quad_data(dic):
     q3_data = {k: v for k, v in dic.items() if v["Quad"] == "q3"}
     q4_data = {k: v for k, v in dic.items() if v["Quad"] == "q4"}
 
-    print("Q1 Data:\n", q1_data)
-    print("Q2 Data:\n", q2_data)
-    print("Q3 Data:\n", q3_data)
-    print("Q4 Data:\n", q4_data)
+    # print("Q1 Data:\n", q1_data)
+    # print("Q2 Data:\n", q2_data)
+    # print("Q3 Data:\n", q3_data)
+    # print("Q4 Data:\n", q4_data)
 
     return q1_data, q2_data, q3_data, q4_data
 
@@ -106,7 +106,7 @@ def get_sample_from_quad(quad_data, med_scr, samp_size, min_quota):
         quad_data[word]["Dist"] = dist
 
     wrd_lst, dist_lst = utils.sort_dic_on_value(quad_data, "Dist")
-    print("Distance of each word from its median:")
+    # print("Distance of each word from its median:")
     # for word in wrd_lst:
     #     print word, quad_data[word]
     if samp_size < min_quota and len(quad_data) > min_quota:

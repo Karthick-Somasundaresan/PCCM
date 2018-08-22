@@ -3,6 +3,7 @@ import trials.utils as utils
 import trials.sampler as sampler
 from nltk.tokenize import word_tokenize
 import trials.drawGraph as drawGraph
+from nltk.corpus import stopwords
 
 import os
 import sqlite3
@@ -29,7 +30,6 @@ def get_movie_dialogues(filename):
             continue
         else:
             dialogues = dialogues + line
-
     return dialogues
 
 
@@ -41,24 +41,49 @@ def get_aoa_score(dialogues):
     word_cnt = 0
     word_dic = {}
     conn = utils.get_db_conn(aoa_db_loc)
-    cmd = "select Word, AoA_Kup_lem, Lemma_highest_PoS from AoA_words where Word="
-    for word in word_tokenize(dialogues):
-        if word in punctuations:
-            continue
-        formed_cmd = cmd + "\"" + word.lower() + "\""
-        result = conn.cursor().execute(formed_cmd).fetchone()
-        if result is None:
-            #word_dic[word] = 25
-            continue
-        if result == "NA": # these words are not rated in AoA excel file itself. So giving maximum value.
-            score = 25
-        else:
-            score = float(result[1])
-            lemma = result[2]
+    # cmd = "select Word, AoA_Kup_lem, Lemma_highest_PoS from AoA_words where Word="
+    # for word in word_tokenize(dialogues):
+    #     if word in punctuations:
+    #         continue
+    #     formed_cmd = cmd + "\"" + word.lower() + "\""
+    #     result = conn.cursor().execute(formed_cmd).fetchone()
+    #     if result is None:
+    #         #word_dic[word] = 25
+    #         continue
+    #     if result == "NA": # these words are not rated in AoA excel file itself. So giving maximum value.
+    #         score = 25
+    #     else:
+    #         score = float(result[1])
+    #         lemma = result[2]
 
-        word_dic[result[0]] = {"AoA": score, "lemma": lemma}
+    #     word_dic[result[0]] = {"AoA": score, "lemma": lemma}
+    #     tot_score += score
+    #     word_cnt += 1
+    word_lst=[]
+    for word in word_tokenize(dialogues):
+        if word.find('\'') > -1 or word in punctuations or word == "..." or word in set(stopwords.words('english') ):
+            continue
+        else:
+            word_lst.append(word)
+    
+    formed_cmd="select Word, AoA_Kup_lem, Lemma_highest_PoS from AoA_words where Word in ("
+    formed_clause = ""
+    for word in word_lst:
+        if formed_clause == "":
+            formed_clause = "\'" + word + "\'"
+        else:
+            formed_clause = formed_clause + ",\'" + word + "\'"
+    
+    formed_cmd = formed_cmd + formed_clause
+    formed_cmd = formed_cmd + ")"
+    # print("Formed Cmd:", formed_cmd)
+    results = conn.cursor().execute(formed_cmd).fetchall()
+    for row in results:
+        score = float(row[1])
+        word_dic[row[0]] = {"AoA": score, "lemma": row[2]}
         tot_score += score
         word_cnt += 1
+
     conn.close()
     return tot_score/word_cnt, word_dic
 
@@ -162,7 +187,7 @@ def get_samples(detailed_mov_scr):
     #     print aoa_wrd_lst[idx], det_mov_scr[aoa_wrd_lst[idx]]['Quad']
     #
     sample_lst = sampler.four_cluster_sampling(detailed_mov_scr, 5)
-    print(sample_lst)
+    # print(sample_lst)
     return sample_lst
 
 

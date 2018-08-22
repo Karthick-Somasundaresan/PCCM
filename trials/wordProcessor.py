@@ -5,6 +5,7 @@ from nltk import UnigramTagger
 from nltk import BigramTagger
 from nltk.tag.stanford import StanfordPOSTagger
 import json
+import trials.lineSynth as lineSynth
 
 
 nltk_pos_map = {"v": ["VB", "VBD", "VBG", "VBN", "VBP", "VBZ", "VERB"],
@@ -39,40 +40,57 @@ def get_hard_words_in_line(line, hard_word_lst):
     all_words = word_tokenize(line)
     interested_words = []
     for word in all_words:
-        print(word)
         if word in hard_word_lst:
             interested_words.append(word)
     return interested_words
 
 
-def substitute_lines(lines_of_interest, hard_word_lst, usr_scr):
+def substitute_lines(lines_of_interest, hard_word_lst, usr_scr, tagged_lines):
     line_mapper = {}
     tagger =get_tagger()
+    print("Identifying PoS for lines using StandfordPOSTagger...")
     for line in lines_of_interest:
         words_to_replace = get_hard_words_in_line(line, hard_word_lst)
-        print("Line:", line, "hard_words:", words_to_replace)
-        tagged_words = mark_pos_for_line(line, tagger)
-        print("Tagged Words:", tagged_words)
+        # print("Line:", line, "hard_words:", words_to_replace)
+        if tagged_lines is None:
+            tagged_words = mark_pos_for_line(line, tagger)
+        else:
+            tagged_words = tagged_lines[line.strip()]
+        # print("Tagged Words:", tagged_words)
         line_mapper[line] ={ "tagged_line": tagged_words, "hard_words": words_to_replace}
 
-    with open("data/line_det.json", "w") as fp:
-        json.dump(line_mapper, fp)
+    print("Identifying PoS for hard-words...")
+    get_pos_for_hard_words(line_mapper)
+    print("Looking Wordnet for alternative words")
+    get_all_meanings_for_hard_words(line_mapper)
+    print("Selecting the best alternative")
+    line_dict = lineSynth.select_best_alternative_for_lines(line_mapper, (9.1, 3.3))
+    print("Reconstructing in lines with alternates")
+    lineSynth.reconstruct_line(line_dict)
+    # with open("data/line_det.json", "w") as fp:
+    #     json.dump(line_mapper, fp)
+    return line_dict
     
 
 def get_pos_for_hard_words(line_data):
     for line in line_data:
         for hard_word in line_data[line]["hard_words"]:
             for tag_tup in line_data[line]["tagged_line"]:
+                print("Tagged_tup:", tag_tup, "hard_word:", hard_word)
                 if "tagged_hard_word" not in line_data[line]:
                     line_data[line]["tagged_hard_word"] = {}
                 if tag_tup[0] == hard_word:
                     line_data[line]["tagged_hard_word"][hard_word] = {"tag": tag_tup[1]}
-    #print(line_data)
+                    break
+            print("------------------------------------------------")
+    print(line_data)
     return
 
 
 def get_all_meanings_for_hard_words(line_data):
     for line in line_data:
+        print(line)
+        print(line_data[line])
         for hard_word in line_data[line]["hard_words"]:
             tag = line_data[line]["tagged_hard_word"][hard_word]["tag"]
             tag = get_mapped_pos(tag)

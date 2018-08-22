@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request
 import trials.MovieAnalyser as MovieAnalyser
 import trials.UserScore as UserScore
+import trials.scaleToUser as ScaleToUser
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='./static')
 
 
 @app.route('/')
@@ -35,8 +36,23 @@ def evaluate():
     print("Movie_id: ", mov_id)
     usr_scr = UserScore.analyze_usr_scr(mov_id, request.form)
     print("User's evaluated Score:", usr_scr)
-    return render_template('MoviePage.html')
+    print("Identifying hard words for the user")
+    ScaleToUser.get_alternates(mov_id, usr_scr)
+    mov_src = {
+                "src": "./static/Movies/Pirates.of.the.Caribbean.Curse.of.the.Black.Pearl.2003.720p.BrRip.x264.Deceit.YIFY.mp4",
+                "orig_titles": "./static/subtitles/original/Pirates_of_the_Caribbean_The_Curse_of_the_Black_Pearl.webvtt",
+                "person_titles":"./static/subtitles/modified/Personalized_captions.vtt"
+            }
+    return render_template('MoviePage.html', mov_src=mov_src)
 
+@app.route('/test')
+def test():
+    mov_src = {
+                "src": "./static/Movies/Pirates.of.the.Caribbean.Curse.of.the.Black.Pearl.2003.720p.BrRip.x264.Deceit.YIFY.mp4",
+                "orig_titles": "./static/subtitles/original/Pirates_of_the_Caribbean_The_Curse_of_the_Black_Pearl.webvtt",
+                "person_titles":"./static/subtitles/modified/Personalized_captions.vtt"
+            }
+    return render_template('MoviePage.html', mov_src=mov_src)
 
 def clever_function(id):
     print("clicked on :poster", id)

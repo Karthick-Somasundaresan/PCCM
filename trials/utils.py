@@ -131,5 +131,17 @@ def get_dist_from_pt(word_det, src_pt):
     dist = math.sqrt(math.pow((src_pt[1] - word_det["Freq"]), 2) + math.pow((src_pt[0] - word_det["AoA"]), 2))
     return dist
 
+def generate_new_dialogues(assetId, line_dict):
+    modified_fp = open("webapp/static/subtitles/modified/Personalized_captions.vtt", "w")
+    with open("subtitles/original/Pirates_of_the_Caribbean_The_Curse_of_the_Black_Pearl.webvtt") as vtt:
+        for line in vtt:
+            if line in line_dict:
+                modified_fp.write(line_dict[line]["reconstructed_line"])
+            else:
+                modified_fp.write(line)
+    
+    modified_fp.close()
+    return
+
 if __name__ == "__main__":
     get_word_scr(['parley', 'negotiation', 'dialogue', 'talks'])

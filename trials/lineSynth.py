@@ -60,11 +60,12 @@ def reconstruct_line(line_dict):
         line_builder = ""
         for word in word_tokenize(line):
             if word in line_dict[line]["hard_words"] and line_dict[line]["tagged_hard_word"][word]["best_alternate"] != word:
-                line_builder = line_builder + " " +word
+                line_builder = line_builder + word + " "
                 line_builder = line_builder + " ( " + line_dict[line]["tagged_hard_word"][word]["best_alternate"] + " ) " 
             else:
-                line_builder = line_builder + " " + word
-        
+                line_builder = line_builder + word + " "
+        line_builder = line_builder.rstrip()
+        line_builder = line_builder + "\n" 
         line_dict[line]["reconstructed_line"] = line_builder
 
     return
