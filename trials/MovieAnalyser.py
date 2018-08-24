@@ -15,24 +15,6 @@ freq_db_loc = "/Users/karsomas/BITS/Project/data/sqlite_dbs/WordFrequency.db"
 
 
 
-def filter_line(line):
-    if line[0].isdigit() or line[0].isspace():
-        return True
-    else:
-        return False
-
-
-def get_movie_dialogues(filename):
-    dialogues = ""
-    text_track_file = open(filename, "r")
-    for line in text_track_file:
-        if filter_line(line):
-            continue
-        else:
-            dialogues = dialogues + line
-    return dialogues
-
-
 def get_aoa_score(dialogues):
     tot_score = 0
     score = 0
@@ -120,7 +102,7 @@ def get_freq_score(detail_aoa):
 
 
 def get_movie_score(filename):
-    dialogues = get_movie_dialogues(filename)
+    dialogues = utils.get_movie_dialogues(filename)
     avg_aoa_score, detail_aoa_score = get_aoa_score(dialogues)
     print("Avg Score:", avg_aoa_score)
     aoa_five_num_summ = utils.get_five_num_summary(detail_aoa_score, "AoA")
@@ -194,7 +176,7 @@ def get_samples(detailed_mov_scr):
 
     #avg_freq_score, detail_freq_score = get_freq_score()
 def get_samples_for_movie(movie_id):
-    det_mov_scr, aoa_out, freq_out = get_movie_score("/Users/karsomas/BITS/Project/Subtitles/Pirates_of_the_Caribbean_The_Curse_of_the_Black_Pearl.DVDRip.aXXo.en.srt")
+    det_mov_scr, aoa_out, freq_out = get_movie_score("/Users/karsomas/BITS/Project/GitRepo/PCCM/webapp/static/subtitles/original/Pirates_of_the_Caribbean_The_Curse_of_the_Black_Pearl.webvtt")
     mov_sam, q1_avg, q2_avg, q3_avg, q4_avg = get_samples(det_mov_scr)
     mov_dic = {movie_id: {"det_mov_scr": det_mov_scr}, "q1_avg": q1_avg, "q2_avg": q2_avg, "q3_avg": q3_avg, "q4_avg": q4_avg, "aoa_out": aoa_out, "freq_out": freq_out}
     mov_json = json.dumps(mov_dic)

@@ -51,7 +51,7 @@ def substitute_lines(lines_of_interest, hard_word_lst, usr_scr, tagged_lines):
     print("Identifying PoS for lines using StandfordPOSTagger...")
     for line in lines_of_interest:
         words_to_replace = get_hard_words_in_line(line, hard_word_lst)
-        # print("Line:", line, "hard_words:", words_to_replace)
+        # print("Line:", line.strip(), "hard_words:", words_to_replace)
         if tagged_lines is None:
             tagged_words = mark_pos_for_line(line, tagger)
         else:

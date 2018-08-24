@@ -78,7 +78,7 @@ def load_mov_det(assetId):
 
 #TODO - Have to get the actual subtitles location for the given assetId
 def get_subtitles_for_asset(assetId):
-    return "subtitles/original/Pirates_of_the_Caribbean_The_Curse_of_the_Black_Pearl.webvtt"
+    return "/Users/karsomas/BITS/Project/GitRepo/PCCM/webapp/static/subtitles/original/Pirates_of_the_Caribbean_The_Curse_of_the_Black_Pearl.webvtt"
 
 def get_word_scr(word_lst):
     aoa_conn = get_db_conn(aoa_db_loc)
@@ -87,6 +87,8 @@ def get_word_scr(word_lst):
     freq_cur = freq_conn.cursor()
     formed_clause = ""
     for word in word_lst:
+        if word.find('\'') > -1:
+            continue
         if formed_clause == "":
             formed_clause = "\'" + word + "\'"
         else:
@@ -126,14 +128,14 @@ def get_dist_from_pt(word_det, src_pt):
     # med_scr (freq_val, aoa_val)
     if "Freq" not in word_det:
         word_det["Freq"] = 0
-    if "AoA" not in word_det:
+    if "AoA" not in word_det:   
         word_det["AoA"] = 25
     dist = math.sqrt(math.pow((src_pt[1] - word_det["Freq"]), 2) + math.pow((src_pt[0] - word_det["AoA"]), 2))
     return dist
 
 def generate_new_dialogues(assetId, line_dict):
     modified_fp = open("webapp/static/subtitles/modified/Personalized_captions.vtt", "w")
-    with open("subtitles/original/Pirates_of_the_Caribbean_The_Curse_of_the_Black_Pearl.webvtt") as vtt:
+    with open("/Users/karsomas/BITS/Project/GitRepo/PCCM/webapp/static/subtitles/original/Pirates_of_the_Caribbean_The_Curse_of_the_Black_Pearl.webvtt") as vtt:
         for line in vtt:
             if line in line_dict:
                 modified_fp.write(line_dict[line]["reconstructed_line"])
@@ -142,6 +144,25 @@ def generate_new_dialogues(assetId, line_dict):
     
     modified_fp.close()
     return
+
+
+def filter_line(line):
+    if line[0].isdigit() or line[0].isspace():
+        return True
+    else:
+        return False
+
+
+def get_movie_dialogues(filename):
+    dialogues = ""
+    text_track_file = open(filename, "r")
+    for line in text_track_file:
+        if filter_line(line):
+            continue
+        else:
+            dialogues = dialogues + line
+    return dialogues
+
 
 if __name__ == "__main__":
     get_word_scr(['parley', 'negotiation', 'dialogue', 'talks'])
